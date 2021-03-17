@@ -1,34 +1,12 @@
 FROM rocker/r-ver:4.0.4
 
-# from rstudio container
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-    file \
-    git \
-    libapparmor1 \
-    libclang-dev \
-    libcurl4-openssl-dev \
-    libedit2 \
-    libssl-dev \
-    lsb-release \
-    multiarch-support \
-    psmisc \
-    procps \
-    python-setuptools \
-    sudo \
-    wget 
+ENV S6_VERSION=v2.1.0.2
+ENV RSTUDIO_VERSION=latest
+ENV PATH=/usr/lib/rstudio-server/bin:$PATH
 
-# from tidyverse container
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-  libxml2-dev \
-  libcairo2-dev \
-  libsqlite-dev \
-  libmariadbd-dev \
-  libmariadbclient-dev \
-  libpq-dev \
-  libssh2-1-dev \
-  unixodbc-dev \
-  libsasl2-dev
+RUN /rocker_scripts/install_rstudio.sh
+RUN /rocker_scripts/install_pandoc.sh
+RUN /rocker_scripts/install_tidyverse.sh
 
 # cut through to install faster. ideally we'd just install from source from a secure repo by putting the options repo override on top of this line
 RUN install2.r devtools tidyverse AzureStor Rcpp glmnet onehot RcppArmadillo
